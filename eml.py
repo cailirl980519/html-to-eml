@@ -18,7 +18,6 @@ class Gen_Emails(object):
 		self.output = os.path.dirname(__file__)
 		self.recepiant = '123@xyz.com'
 		self.option()
-		# self.FindFiles()
 
 	def option(self):
 		print (self.path)
@@ -31,23 +30,27 @@ class Gen_Emails(object):
 		else:
 			self.FindFiles()
 
-
-
 	def FindFiles(self):
-		self.path = input('Enter folder path:')
+		self.path = input('Enter path:')
 		if(int(self.send) == 1 or int(self.send) == 3):
 			self.output = input('Enter output path:')
 		if(int(self.send) == 2 or int(self.send) == 3):
 			self.recepiant = input('Enter Email address:')
-		files = listdir(self.path)
-		for f in files:
-			# 產生檔案的絕對路徑
-			fullpath = join(self.path, f)
-			# 判斷 fullpath 是檔案還是目錄
-			if isfile(fullpath) and 'html' in f:
-				if not("._" in f):
-					html = codecs.open(fullpath, 'r', 'utf-8')
-					self.EmailGen(f, html)  	
+		if os.path.isdir(self.path):
+			files = listdir(self.path)
+			for f in files:
+				# 產生檔案的絕對路徑
+				fullpath = join(self.path, f)
+				# 判斷 fullpath 是檔案還是目錄
+				if isfile(fullpath) and 'html' in f:
+					if not("._" in f):
+						html = codecs.open(fullpath, 'r', 'utf-8')
+						filename, file_extension = os.path.splitext(f)
+						self.EmailGen(filename, html)
+		else:
+			filename, file_extension = os.path.splitext(os.path.basename(self.path))
+			html = codecs.open(self.path, 'r', 'utf-8')
+			self.EmailGen(filename, html)	
 
 	def EmailGen(self, filename, html):
 		data = []
@@ -70,7 +73,7 @@ class Gen_Emails(object):
 
 		sender = ''
 		recepiant = ''
-		subject = filename.replace('.html','')
+		subject = filename
 
 		msg = MIMEMultipart('mixed')
 		msgImg = MIMEMultipart('related')		
