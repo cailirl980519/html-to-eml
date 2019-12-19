@@ -13,32 +13,15 @@ import smtplib
 
 class Gen_Emails(object):
 	def __init__(self):
-		self.send = 1
 		self.path = os.path.dirname(__file__)
 		self.output = os.path.dirname(__file__)
-		self.recepiant = '123@xyz.com'
-		self.option()
-
-	def option(self):
-		print (self.path)
-		print('1.Save as .eml\n')
-		print('2.Send email\n')
-		print('3.Above both\n')
-		self.send = input('Enter option:') 
-		if(int(self.send)>3):
-			print('Error')
-		else:
-			self.FindFiles()
+		self.FindFiles()
 
 	def FindFiles(self):
 		self.path = input('Enter path:')
-		if(int(self.send) == 1 or int(self.send) == 3):
-			self.output = input('Enter output path:')
-		if(int(self.send) == 2 or int(self.send) == 3):
-			self.recepiant = input('Enter Email address:')
-
+		self.output = input('Enter output path:')
 		#判斷path是檔案還是目錄
-		if os.path.isdir(self.path):
+		if os.path.isdir(self.path):		
 			files = listdir(self.path)
 			for f in files:
 				# 產生檔案的絕對路徑
@@ -51,13 +34,13 @@ class Gen_Emails(object):
 		elif os.path.isfile(self.path):
 			filename, file_extension = os.path.splitext(os.path.basename(self.path))
 			html = codecs.open(self.path, 'r', 'utf-8')
-			self.EmailGen(filename, html)	
+			self.EmailGen(filename, html)
 
 	def EmailGen(self, filename, html):
 		data = []
 		cid_list = []
 		
-		# find base64 img and replace
+		#find base64 img and replace
 		soup = BeautifulSoup(html, 'html.parser')
 		img_tag = soup.find_all('img')
 		for tag in img_tag:
@@ -81,6 +64,10 @@ class Gen_Emails(object):
 		msg = MIMEMultipart('mixed')
 		msgImg = MIMEMultipart('related')		
 
+		msg['Subject'] = subject
+		msg['From'] = sender
+		msg['To'] = recepiant
+
 		#html
 		part = MIMEText(html, 'html')
 
@@ -95,14 +82,9 @@ class Gen_Emails(object):
 
 		msg.attach(msgImg)
 
-		if(int(self.send) == 1 or int(self.send) == 3):
-			msg['Subject'] = subject
-			msg['From'] = sender
-			msg['To'] = recepiant
-			self.SaveToFile(msg, subject)
-		if(int(self.send) == 2 or int(self.send) == 3):
-			msg['Subject'] = subject
-			self.Send(msg)
+		self.SaveToFile(msg, subject)
+
+		# self.Send(msg)
 
 	def SaveToFile(self, msg, filename):
 		file = filename + '.eml'
@@ -112,15 +94,13 @@ class Gen_Emails(object):
 
 	def Send(self, msg):
 		try:
-			msg['From'] = 'd1997721@yahoo.com.tw'
-			msg['To'] = self.recepiant
 			s = smtplib.SMTP('smtp.mail.yahoo.com:587')
 			s.starttls()
-			s.login('d1997721@yahoo.com.tw',"D_a_n_i_e_l_19")
-			s.sendmail('d1997721@yahoo.com.tw', self.recepiant, msg.as_string())
+			s.login()
+			s.sendmail('d1997721@yahoo.com.tw', '', msg.as_string())
 			s.quit()
 			print('success')
 		except smtplib.SMTPException:
 			print('Error')
 
-x = Gen_Emails()
+Gen_Emails()
