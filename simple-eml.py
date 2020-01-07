@@ -19,27 +19,30 @@ class Gen_Emails(object):
 
 	def FindFiles(self):
 		self.path = input('Enter path:')
-		self.output = input('Enter output path:')
-		#判斷path是檔案還是目錄
-		if os.path.isdir(self.path):		
-			files = listdir(self.path)
-			for f in files:
-				# 產生檔案的絕對路徑
-				fullpath = join(self.path, f)
-				if isfile(fullpath) and 'html' in f:
-					if not("._" in f):
-						html = codecs.open(fullpath, 'r', 'utf-8')
-						filename, file_extension = os.path.splitext(f)
-						self.EmailGen(filename, html)
-		elif os.path.isfile(self.path):
-			filename, file_extension = os.path.splitext(os.path.basename(self.path))
-			html = codecs.open(self.path, 'r', 'utf-8')
-			self.EmailGen(filename, html)
+		if os.path.exists(self.path):
+			self.output = input('Enter output path:')
+			#判斷path是檔案還是目錄
+			if os.path.isdir(self.path):
+				files = listdir(self.path)
+				for f in files:
+					# 產生檔案的絕對路徑
+					fullpath = join(self.path, f)
+					if isfile(fullpath) and 'html' in f:
+						if not("._" in f):
+							html = codecs.open(fullpath, 'r', 'utf-8')
+							filename, file_extension = os.path.splitext(f)
+							self.EmailGen(filename, html)
+			elif os.path.isfile(self.path):
+				filename, file_extension = os.path.splitext(os.path.basename(self.path))
+				html = codecs.open(self.path, 'r', 'utf-8')
+				self.EmailGen(filename, html)
+		else:
+			print('File or folder not found.')
 
 	def EmailGen(self, filename, html):
 		data = []
 		cid_list = []
-		
+
 		#find base64 img and replace
 		soup = BeautifulSoup(html, 'html.parser')
 		img_tag = soup.find_all('img')
@@ -62,7 +65,7 @@ class Gen_Emails(object):
 		subject = filename
 
 		msg = MIMEMultipart('mixed')
-		msgImg = MIMEMultipart('related')		
+		msgImg = MIMEMultipart('related')
 
 		msg['Subject'] = subject
 		msg['From'] = sender

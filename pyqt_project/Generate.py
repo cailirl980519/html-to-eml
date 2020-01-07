@@ -28,7 +28,6 @@ class Gen_Emails(QtWidgets.QMainWindow):
 			filename, file_extension = os.path.splitext(os.path.basename(f))
 			html = codecs.open(f, 'r', 'utf-8')
 			self.EmailGen(filename, html)
-		self.Finish()
 
 	def EmailGen(self, filename, html):
 		data = []
@@ -56,7 +55,7 @@ class Gen_Emails(QtWidgets.QMainWindow):
 		subject = filename
 
 		msg = MIMEMultipart('mixed')
-		msgImg = MIMEMultipart('related')		
+		msgImg = MIMEMultipart('related')
 
 		msg['Subject'] = subject
 		msg['From'] = sender
@@ -83,11 +82,3 @@ class Gen_Emails(QtWidgets.QMainWindow):
 		with open(join(self.output, file), 'w') as outfile:
 			gen = generator.Generator(outfile)
 			gen.flatten(msg)
-
-	def Finish(self):
-		q = QMessageBox(QMessageBox.Information, "Finish!",  'Transfer Compelte!')
-		q.setStandardButtons(QMessageBox.Ok);
-		i = QIcon()
-		i.addPixmap(QPixmap("..."), QIcon.Normal)
-		q.setWindowIcon(i)
-		q.exec_()
