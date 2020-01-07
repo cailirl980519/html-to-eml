@@ -9,5 +9,5 @@ HOW TO USE
 
 2. GUI
 * Open pyqt_project/dist/action.exe
-* Press -Browse- button to select .html file path and output path
-* Press -Confirm- to start transfering
+* Press **Browse** button to select .html file path and output path
+* Press **Confirm** to start transfering
