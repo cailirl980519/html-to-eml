@@ -1,5 +1,6 @@
 html-to-eml
 ============
+
 HOW TO USE
 -----------
 1. Command-line interface
@@ -11,3 +12,7 @@ HOW TO USE
 * Open pyqt_project/dist/action.exe
 * Press **Browse** button to select .html file path and output path
 * Press **Confirm** to start transfering
+
+Example
+----------
+There are 2 .html file in html example directory, you can use them to test transfering.
